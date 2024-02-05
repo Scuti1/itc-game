@@ -36,7 +36,7 @@ export const questionsList: QuestionType[] = [
     answer: 'a',
   },
   {
-    question: '1 Дөрвөн ханатай гэр хэдэн уньтай байдаг вэ?',
+    question: '1 Таван ханатай гэр хэдэн уньтай байдаг вэ?',
     type: 'choose',
     choose: [
       { key: 'a', value: '12' },
@@ -47,13 +47,13 @@ export const questionsList: QuestionType[] = [
     answer: 'a',
   },
   {
-    question: '1 Дөрвөн ханатай гэр хэдэн уньтай байдаг вэ?',
+    question: '1 Зургаан ханатай гэр хэдэн уньтай байдаг вэ?',
     type: 'choose',
     choose: [
-      { key: 'a', value: '12' },
-      { key: 'b', value: '42' },
-      { key: 'c', value: '22' },
-      { key: 'd', value: '123' },
+      { key: 'a', value: '66' },
+      { key: 'b', value: '75' },
+      { key: 'c', value: '84' },
+      { key: 'd', value: '80' },
     ],
     answer: 'a',
   },
@@ -152,7 +152,7 @@ export const userEventList: UserEventType[] = [
     passed: true,
   },
   {
-    id: 1,
+    id: 4,
     name: 'Бямбасүх',
     displayName: 'Suhee',
     sex: 'male',
@@ -160,7 +160,7 @@ export const userEventList: UserEventType[] = [
     passed: true,
   },
   {
-    id: 2,
+    id: 5,
     name: 'Дирийлаа',
     displayName: 'Deriilaa',
     sex: 'male',
@@ -168,23 +168,7 @@ export const userEventList: UserEventType[] = [
     passed: false,
   },
   {
-    id: 3,
-    name: 'Өнөрмаа',
-    displayName: 'Өнөрмаа',
-    sex: 'female',
-    time: 35,
-    passed: true,
-  },
-  {
-    id: 2,
-    name: 'Дирийлаа',
-    displayName: 'Deriilaa',
-    sex: 'male',
-    time: 23,
-    passed: false,
-  },
-  {
-    id: 3,
+    id: 6,
     name: 'Өнөрмаа',
     displayName: 'Өнөрмаа',
     sex: 'female',
