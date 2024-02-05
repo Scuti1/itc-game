@@ -24,12 +24,13 @@ const UserEvent = () => {
       case 'name':
         return (
           <User
-            avatarProps={{ radius: 'lg', src: user.avatar }}
-            description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
+            avatarProps={{
+              radius: 'lg',
+              src: user.sex == 'female' ? '/women.png' : '/man.png',
+            }}
+            description={user.name}
+            name={user.displayName}
+          ></User>
         )
 
       case 'time':

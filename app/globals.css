@@ -23,3 +23,9 @@ body {
   .text-balance {
   }
 }
+
+.banner{
+  background-image: url("/banner.jfif");
+  background-repeat: repeat-x;
+}
+
