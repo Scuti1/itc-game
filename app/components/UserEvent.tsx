@@ -28,7 +28,7 @@ const UserEvent = () => {
               radius: 'lg',
               src: user.sex == 'female' ? '/women.png' : '/man.png',
             }}
-            description={user.name}
+            description={'unknown'}
             name={user.displayName}
           ></User>
         )

@@ -34,7 +34,7 @@ export default function Game() {
         </div>
         <div className="basis-5/12 p-20">
           <QuestionTime value={40} />
-          <Question item={questionsList[1]} />
+          <Question item={questionsList[0]} />
           {/*{connecting ? (*/}
           {/*  <p>Connecting...</p>*/}
           {/*) : data != null && data != undefined ? (*/}
