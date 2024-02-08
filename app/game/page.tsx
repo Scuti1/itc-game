@@ -38,6 +38,7 @@ export default function Game() {
       .then((ws) => {
         ws.onmessage = (event) => {
           const data = JSON.parse(event.data)
+          console.log('data', data)
           if (data.question) {
             setQuestion(data.question)
           }

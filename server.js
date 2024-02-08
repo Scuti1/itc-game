@@ -49,6 +49,8 @@ var checkAnswerList = []
 function sendQuestion() {
   const randomQuestion = questions[Math.floor(Math.random() * questions.length)]
   clients.forEach((client) => {
+    clearAnswer()
+    clearEvent()
     client.send(JSON.stringify({ question: randomQuestion }))
   })
 }
@@ -86,14 +88,18 @@ function checkAnswer(answer) {
     userId: answer.userId,
     correct: correct,
   })
+  changeEvent(answer)
+  sendCheckAnswer()
   sendEvent()
 }
 
 function changeEvent(answer) {
+  let user = userList.find((x) => x.id === answer.userId)
   eventList.push({
     id: answer.questionId,
-    userId: answer.userId,
-    correct: answer.correct,
+    userId: user.id,
+    name: user.name,
+    time: 12,
   })
 }
 
@@ -146,7 +152,7 @@ function handleClient(message, ws) {
 
 setInterval(() => {
   sendQuestion()
-}, 3000)
+}, 5000)
 
 setInterval(() => {
   sendEvent()
@@ -154,9 +160,5 @@ setInterval(() => {
 setInterval(() => {
   sendUser()
 }, 1000)
-
-setInterval(() => {
-  sendCheckAnswer()
-}, 500)
 
 console.log('WebSocket server is running on ws://localhost:3001')
