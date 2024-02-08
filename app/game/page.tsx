@@ -4,6 +4,7 @@ import Question from '@/app/components/Question'
 import UserList from '@/app/components/UserList'
 import QuestionTime from '@/app/components/Progress'
 import React, { useEffect, useState } from 'react'
+import Win from '@/app/components/Win'
 
 const registerWebSocket = (): Promise<WebSocket> => {
   return new Promise((resolve, reject) => {
@@ -80,9 +81,12 @@ export default function Game() {
   return (
     <>
       <div className="flex flex-row">
+        {/*Асуулт явж буй үед*/}
         <div className="basis-3/12 pl-10">
           <UserEvent eventList={userEventList} />
         </div>
+
+        {/*Асуулт явж буй үед*/}
         <div className="basis-5/12 p-20">
           {timer != 0 && <QuestionTime value={timer} />}
           {question != '' && (
@@ -95,9 +99,16 @@ export default function Game() {
             />
           )}
         </div>
+        {/*Асуулт явж буй үед*/}
         <div className="basis-4/12 pr-10">
           {userList.length > 0 && <UserList users={userList} />}
         </div>
+
+        {/*Тэмцээн дууссан үед*/}
+        {userList.length != 1 &&
+          userList.filter((it: any) => it.check > 0).length == 1 && (
+            <Win winnerInfo={userList.find((it: any) => it.check > 0)} />
+          )}
       </div>
       <div className="h-8"></div>
       <div className="banner h-60"></div>
