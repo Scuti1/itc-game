@@ -1,31 +1,53 @@
 'use client'
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Input,
-} from '@nextui-org/react'
+import { Button, Input } from '@nextui-org/react'
 import React from 'react'
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { userList } from '@/data'
-import { User } from '@nextui-org/user'
+import { useRouter } from 'next/navigation'
+
+const registerWebSocket = (): Promise<WebSocket> => {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket('ws://localhost:3001')
+
+    ws.onopen = () => {
+      resolve(ws) // Resolve the promise with the WebSocket instance
+    }
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error)
+      reject(error) // Reject the promise if an error occurs
+    }
+  })
+}
 
 export default function Home() {
+  const [teamName, setTeamName] = React.useState('' as string)
+  const router = useRouter()
   const initialState = {
     playerId:
       typeof window !== 'undefined'
         ? window.localStorage.getItem('playerId')
         : false,
   }
-  const register = (playerId: number) => {
-    // window.localStorage.setItem('playerId', playerId.toString())
+  function register() {
+    registerWebSocket()
+      .then((ws) => {
+        let playerId = Math.floor(Math.random() * 9000) + 1000
+        let model = {
+          id: playerId,
+          name: teamName,
+        }
+        ws.send(JSON.stringify({ type: 'register', model }))
+        window.localStorage.setItem('playerId', playerId.toString())
+        router.push('/game')
+      })
+      .catch((error) => {
+        console.error('Failed to register WebSocket:', error)
+      })
   }
 
   return (
     <>
       {initialState.playerId ? (
-        redirect('/game')
+        router.push('/game')
       ) : (
         <>
           <div className=" p-20 w-full h-80 banner">
@@ -34,34 +56,20 @@ export default function Home() {
                 <Input
                   className="flex-initial"
                   type="text"
-                  label="Тоглоомын нэр"
+                  label="Багийн нэр"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
                 />
               </div>
-              <div className="mb-5">
-                <Autocomplete label="Нэр" className="w-full">
-                  {userList.map((user) => (
-                    <AutocompleteItem key={user.id} value={user.id}>
-                      <User
-                        avatarProps={{
-                          radius: 'lg',
-                          src: user.sex == 'female' ? '/women.png' : '/man.png',
-                        }}
-                        name={user.name}
-                      ></User>
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
-              <Link href="/game">
-                <Button
-                  color="warning"
-                  size="lg"
-                  className="w-full"
-                  onClick={() => register(1)}
-                >
-                  Тоглоом эхлүүлэх
-                </Button>
-              </Link>
+              <Button
+                color="warning"
+                size="lg"
+                className="w-full"
+                disabled={teamName == ''}
+                onClick={() => register()}
+              >
+                Тоглоом эхлүүлэх
+              </Button>
             </div>
           </div>
         </>

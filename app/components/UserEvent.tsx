@@ -10,13 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { userEventList } from '@/data'
 
 const columns = [
   { name: 'Нэр', uid: 'name' },
   { name: 'Хугацаа', uid: 'time' },
 ]
-const UserEvent = () => {
+const UserEvent = (props: any) => {
+  const { eventList } = props
   const renderCell = React.useCallback((user: any, columnKey: any) => {
     const cellValue = user[columnKey]
 
@@ -60,8 +60,8 @@ const UserEvent = () => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={userEventList}>
-        {(item) => (
+      <TableBody items={eventList}>
+        {(item: any) => (
           <TableRow key={item.id}>
             {(columnKey) => (
               <TableCell>{renderCell(item, columnKey)}</TableCell>

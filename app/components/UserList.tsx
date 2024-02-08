@@ -9,7 +9,6 @@ import {
   TableRow,
 } from '@nextui-org/react'
 import { User } from '@nextui-org/user'
-import { userList } from '@/data'
 import React from 'react'
 import { HeartIcon } from '@/app/asset/HeartIcon'
 import { CheckIcon } from '@nextui-org/shared-icons'
@@ -48,6 +47,7 @@ const checkRender = (checkNumber: number) => {
 }
 
 const UserList = (props: any) => {
+  const { users } = props
   const renderCell = React.useCallback((user: any, columnKey: any) => {
     const cellValue = user[columnKey]
 
@@ -57,10 +57,9 @@ const UserList = (props: any) => {
           <User
             avatarProps={{
               radius: 'lg',
-              src: user.sex == 'female' ? '/women.png' : '/man.png',
+              src: '/man.png',
             }}
-            description={'unknown'}
-            name={user.displayName}
+            name={user.name}
           ></User>
         )
 
@@ -94,8 +93,8 @@ const UserList = (props: any) => {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={userList}>
-        {(item) => (
+      <TableBody items={users}>
+        {(item: any) => (
           <TableRow key={item.id}>
             {(columnKey) => (
               <TableCell>{renderCell(item, columnKey)}</TableCell>

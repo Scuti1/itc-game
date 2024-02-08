@@ -1,23 +1,12 @@
-// server.js
 const WebSocket = require('ws')
+const wss = new WebSocket.Server({ port: 3001 })
+const clients = []
 
-const server = new WebSocket.Server({ port: 3001 })
-
-// baaz ruu hereglegch burtgeh service
-// baazaas hereglegch tatah service
-// asuultand hariulah uyd onoonii jagsaalt uurchluh
-// asuultaa baaz ruu hadgalaad tatah service
-
+// static data
+const ami = 3
 const questions = [
   {
     question: '1 Дөрвөн ханатай гэр хэдэн уньтай байдаг вэ?',
-    type: 'normal',
-    choose: [],
-    answer: 'a',
-  },
-  {
-    question: '1 Таван ханатай гэр хэдэн уньтай байдаг вэ?',
-    type: 'choose',
     choose: [
       { key: 'a', value: '12' },
       { key: 'b', value: '42' },
@@ -27,8 +16,17 @@ const questions = [
     answer: 'a',
   },
   {
-    question: '1 Зургаан ханатай гэр хэдэн уньтай байдаг вэ?',
-    type: 'choose',
+    question: '2 Таван ханатай гэр хэдэн уньтай байдаг вэ?',
+    choose: [
+      { key: 'a', value: '12' },
+      { key: 'b', value: '42' },
+      { key: 'c', value: '22' },
+      { key: 'd', value: '123' },
+    ],
+    answer: 'a',
+  },
+  {
+    question: '3 Зургаан ханатай гэр хэдэн уньтай байдаг вэ?',
     choose: [
       { key: 'a', value: '66' },
       { key: 'b', value: '75' },
@@ -39,45 +37,78 @@ const questions = [
   },
 ]
 
-function sendToClients(message) {
-  server.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify({ message }))
-    }
+var userList = []
+
+var eventList = []
+
+function sendQuestion() {
+  const randomQuestion = questions[Math.floor(Math.random() * questions.length)]
+  clients.forEach((client) => {
+    client.send(JSON.stringify({ question: randomQuestion }))
+    console.log('Question sent', randomQuestion)
   })
 }
 
-let count = 10 // Change initial count to 10
-
-function sendTime(num) {
-  if (count > 0) {
-    sendToClients(num)
-    console.log('num => ', num)
-    count -= 1
-    setTimeout(() => {
-      sendTime(count)
-    }, 1000)
-  }
+function sendEvent() {
+  clients.forEach((client) => {
+    client.send(JSON.stringify({ event: eventList }))
+    console.log('Event sent', eventList)
+  })
 }
 
-async function startAskingQuestions() {
-  for (let question of questions) {
-    sendToClients(question)
-    console.log('question => ', question)
-    await sendTime(10)
-  }
+function sendUser() {
+  clients.forEach((client) => {
+    client.send(JSON.stringify({ users: userList }))
+    console.log('User sent', userList)
+  })
 }
 
-server.on('connection', (socket) => {
+wss.on('connection', function connection(ws) {
   console.log('Client connected')
-  socket.send(JSON.stringify({ count }))
+  clients.push(ws)
 
-  socket.on('close', () => {
+  sendUser()
+  sendQuestion()
+
+  ws.on('message', function incoming(message) {
+    console.log('received: %s', message)
+    handleClient(message, ws)
+  })
+
+  ws.on('close', function () {
     console.log('Client disconnected')
+    const index = clients.indexOf(ws)
+    if (index > -1) {
+      clients.splice(index, 1)
+    }
   })
 })
 
-sendTime(count)
-startAskingQuestions()
+function handleClient(message, ws) {
+  const data = JSON.parse(message)
+
+  if (data.type === 'register') {
+    userList.unshift({
+      id: data.model.id,
+      name: data.model.name,
+      score: 0,
+      check: ami,
+    })
+    console.log('userList', userList)
+  } else if (data.type === 'answer') {
+    console.log(`Client ${ws.name} answered: ${data.answer}`)
+  }
+}
+
+setInterval(() => {
+  sendQuestion()
+}, 3000)
+
+setInterval(() => {
+  sendEvent()
+}, 1000)
+setInterval(() => {
+  sendUser()
+}, 1000)
 
 console.log('WebSocket server is running on ws://localhost:3001')
