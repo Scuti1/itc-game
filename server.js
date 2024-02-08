@@ -6,6 +6,7 @@ const clients = []
 const ami = 3
 const questions = [
   {
+    id: 1,
     question: '1 Дөрвөн ханатай гэр хэдэн уньтай байдаг вэ?',
     choose: [
       { key: 'a', value: '12' },
@@ -16,6 +17,7 @@ const questions = [
     answer: 'a',
   },
   {
+    id: 2,
     question: '2 Таван ханатай гэр хэдэн уньтай байдаг вэ?',
     choose: [
       { key: 'a', value: '12' },
@@ -26,6 +28,7 @@ const questions = [
     answer: 'a',
   },
   {
+    id: 3,
     question: '3 Зургаан ханатай гэр хэдэн уньтай байдаг вэ?',
     choose: [
       { key: 'a', value: '66' },
@@ -41,25 +44,66 @@ var userList = []
 
 var eventList = []
 
+var checkAnswerList = []
+
 function sendQuestion() {
   const randomQuestion = questions[Math.floor(Math.random() * questions.length)]
   clients.forEach((client) => {
     client.send(JSON.stringify({ question: randomQuestion }))
-    console.log('Question sent', randomQuestion)
   })
 }
 
 function sendEvent() {
   clients.forEach((client) => {
     client.send(JSON.stringify({ event: eventList }))
-    console.log('Event sent', eventList)
   })
 }
 
 function sendUser() {
   clients.forEach((client) => {
     client.send(JSON.stringify({ users: userList }))
-    console.log('User sent', userList)
+  })
+}
+
+function clearEvent() {
+  eventList = []
+}
+
+function checkAnswer(answer) {
+  let correct =
+    questions.find((x) => x.id === answer.questionId).answer === answer.answer
+  userList.forEach((x) => {
+    if (x.id === answer.userId) {
+      if (!correct) {
+        x.check -= 1
+      } else {
+        x.score += 1
+      }
+    }
+  })
+  checkAnswerList.push({
+    questionId: answer.questionId,
+    userId: answer.userId,
+    correct: correct,
+  })
+  sendEvent()
+}
+
+function changeEvent(answer) {
+  eventList.push({
+    id: answer.questionId,
+    userId: answer.userId,
+    correct: answer.correct,
+  })
+}
+
+function clearAnswer() {
+  checkAnswerList = []
+}
+
+function sendCheckAnswer() {
+  clients.forEach((client) => {
+    client.send(JSON.stringify({ checkAnswer: checkAnswerList }))
   })
 }
 
@@ -96,7 +140,7 @@ function handleClient(message, ws) {
     })
     console.log('userList', userList)
   } else if (data.type === 'answer') {
-    console.log(`Client ${ws.name} answered: ${data.answer}`)
+    checkAnswer(data.model)
   }
 }
 
@@ -110,5 +154,9 @@ setInterval(() => {
 setInterval(() => {
   sendUser()
 }, 1000)
+
+setInterval(() => {
+  sendCheckAnswer()
+}, 500)
 
 console.log('WebSocket server is running on ws://localhost:3001')

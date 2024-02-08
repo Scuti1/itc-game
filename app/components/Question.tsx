@@ -1,20 +1,15 @@
 'use client'
-import React from 'react'
-import {
-  Button,
-  Checkbox,
-  Chip,
-  Input,
-  Radio,
-  RadioGroup,
-} from '@nextui-org/react'
+import React, { useState } from 'react'
+import { Button, Radio, RadioGroup } from '@nextui-org/react'
 import { Choose } from '@/data'
 import { Card, CardBody } from '@nextui-org/card'
 import { SendFilledIcon } from '@nextui-org/shared-icons'
 
 const Question = (props: any) => {
-  const { question, choose } = props.item
+  const { id, question, choose } = props.item
   const active = props.active
+  const [answer, setAnswer] = useState('' as string)
+
   return (
     <>
       <div className="flex flex-col h-96">
@@ -23,7 +18,12 @@ const Question = (props: any) => {
             <p>{question}</p>
           </CardBody>
         </Card>
-        <RadioGroup color="warning" className="p-5">
+        <RadioGroup
+          color="warning"
+          className="p-5"
+          value={answer}
+          onValueChange={setAnswer}
+        >
           {choose.map((item: Choose) => (
             <Radio key={item.key} value={item.key}>
               {item.value}
@@ -33,8 +33,9 @@ const Question = (props: any) => {
         <Button
           color="warning"
           size="lg"
-          disabled={!active}
+          disabled={!active || answer == ''}
           startContent={<SendFilledIcon />}
+          onClick={() => props.send({ id: id, answer: answer })}
         >
           Хариулт илгээх
         </Button>
