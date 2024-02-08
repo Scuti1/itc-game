@@ -22,7 +22,7 @@ const registerWebSocket = (): Promise<WebSocket> => {
 
 export default function Game() {
   const [question, setQuestion] = useState('')
-  const [useEventList, setUserEventList] = useState([])
+  const [userEventList, setUserEventList] = useState([])
   const [userList, setUserList] = useState([])
   const [timer, setTimer] = useState(0)
 
@@ -38,7 +38,7 @@ export default function Game() {
       .then((ws) => {
         ws.onmessage = (event) => {
           const data = JSON.parse(event.data)
-          console.log('data', data)
+          // console.log('data', data)
           if (data.question) {
             setQuestion(data.question)
           }
@@ -77,23 +77,18 @@ export default function Game() {
       })
   }
 
-  const checkActive = () => {
-    let player: any = userList.find((it: any) => it.id == initialState.playerId)
-    return player != null && player.check > 0
-  }
-
   return (
     <>
       <div className="flex flex-row">
         <div className="basis-3/12 pl-10">
-          {useEventList.length > 0 && <UserEvent eventList={useEventList} />}
+          <UserEvent eventList={userEventList} />
         </div>
         <div className="basis-5/12 p-20">
           {timer != 0 && <QuestionTime value={timer} />}
           {question != '' && (
             <Question
               item={question}
-              active={checkActive}
+              user={userList.find((it: any) => it.id == initialState.playerId)}
               send={(value: any) => {
                 sendAnswer(value)
               }}

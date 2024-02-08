@@ -3,7 +3,7 @@ const wss = new WebSocket.Server({ port: 3001 })
 const clients = []
 
 // static data
-const ami = 3
+const ami = 1
 const questions = [
   {
     id: 1,

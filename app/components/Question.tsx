@@ -1,14 +1,21 @@
 'use client'
 import React, { useState } from 'react'
-import { Button, Radio, RadioGroup } from '@nextui-org/react'
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Radio,
+  RadioGroup,
+} from '@nextui-org/react'
 import { Choose } from '@/data'
 import { Card, CardBody } from '@nextui-org/card'
 import { SendFilledIcon } from '@nextui-org/shared-icons'
 
 const Question = (props: any) => {
   const { id, question, choose } = props.item
-  const active = props.active
-  const [answer, setAnswer] = useState('' as string)
+  const user = props.user
+  const [answer, setAnswer] = useState('')
 
   return (
     <>
@@ -30,15 +37,40 @@ const Question = (props: any) => {
             </Radio>
           ))}
         </RadioGroup>
-        <Button
-          color="warning"
-          size="lg"
-          disabled={!active || answer == ''}
-          startContent={<SendFilledIcon />}
-          onClick={() => props.send({ id: id, answer: answer })}
-        >
-          Хариулт илгээх
-        </Button>
+        {user.check > 0 ? (
+          <Button
+            color="warning"
+            size="lg"
+            disabled={user.check == 0 || answer == ''}
+            startContent={<SendFilledIcon />}
+            onClick={() => props.send({ id: id, answer: answer })}
+          >
+            Хариулт илгээх
+          </Button>
+        ) : (
+          <Popover
+            key={'popover'}
+            showArrow
+            offset={10}
+            placement="bottom"
+            backdrop={'blur'}
+          >
+            <PopoverTrigger>
+              <Button
+                color="warning"
+                size="lg"
+                startContent={<SendFilledIcon />}
+              >
+                Хариулт илгээх
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[240px]">
+              <h2>Уучлаарай</h2>
+              <br />
+              <p>Танай баг хожигдсон😓</p>
+            </PopoverContent>
+          </Popover>
+        )}
       </div>
     </>
   )

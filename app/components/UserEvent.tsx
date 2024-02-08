@@ -26,10 +26,9 @@ const UserEvent = (props: any) => {
           <User
             avatarProps={{
               radius: 'lg',
-              src: user.sex == 'female' ? '/women.png' : '/man.png',
+              src: '/man.png',
             }}
-            description={'unknown'}
-            name={user.displayName}
+            name={user.name}
           ></User>
         )
 
@@ -37,7 +36,7 @@ const UserEvent = (props: any) => {
         return (
           <Chip
             className="capitalize"
-            color={user.passed ? 'success' : 'danger'}
+            color={user.time > 10 ? 'danger' : 'success'}
             size="sm"
             variant="flat"
           >
