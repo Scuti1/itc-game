@@ -3,6 +3,9 @@ const wss = new WebSocket.Server({ port: 3001 })
 const clients = []
 
 // static data
+const countTime = 20
+const countTimeMill = 20000
+
 const ami = 1
 const questions = [
   {
@@ -116,9 +119,7 @@ function sendCheckAnswer() {
 wss.on('connection', function connection(ws) {
   console.log('Client connected')
   clients.push(ws)
-
   sendUser()
-  sendQuestion()
 
   ws.on('message', function incoming(message) {
     console.log('received: %s', message)
@@ -147,12 +148,10 @@ function handleClient(message, ws) {
     console.log('userList', userList)
   } else if (data.type === 'answer') {
     checkAnswer(data.model)
+  } else if (data.type === 'start') {
+    sendQuestion()
   }
 }
-
-setInterval(() => {
-  sendQuestion()
-}, 5000)
 
 setInterval(() => {
   sendEvent()

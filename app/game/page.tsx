@@ -5,6 +5,7 @@ import UserList from '@/app/components/UserList'
 import QuestionTime from '@/app/components/Progress'
 import React, { useEffect, useState } from 'react'
 import Win from '@/app/components/Win'
+import Lose from '@/app/components/Lose'
 
 const registerWebSocket = (): Promise<WebSocket> => {
   return new Promise((resolve, reject) => {
@@ -108,6 +109,18 @@ export default function Game() {
         {userList.length != 1 &&
           userList.filter((it: any) => it.check > 0).length == 1 && (
             <Win winnerInfo={userList.find((it: any) => it.check > 0)} />
+          )}
+
+        {/*  Хожигдсон багт харуулах*/}
+        {userList.length != 1 &&
+          userList.filter(
+            (it: any) => it.userId == initialState.playerId && it.check == 0,
+          ).length == 1 && (
+            <Lose
+              winnerInfo={userList.find(
+                (it: any) => it.userId == initialState.playerId,
+              )}
+            />
           )}
       </div>
       <div className="h-8"></div>

@@ -15,6 +15,7 @@ import { SendFilledIcon } from '@nextui-org/shared-icons'
 const Question = (props: any) => {
   const { id, question, choose } = props.item
   const user = props.user
+  const admin = props.admin
   const [answer, setAnswer] = useState('')
 
   return (
@@ -25,51 +26,55 @@ const Question = (props: any) => {
             <p>{question}</p>
           </CardBody>
         </Card>
-        <RadioGroup
-          color="warning"
-          className="p-5"
-          value={answer}
-          onValueChange={setAnswer}
-        >
-          {choose.map((item: Choose) => (
-            <Radio key={item.key} value={item.key}>
-              {item.value}
-            </Radio>
-          ))}
-        </RadioGroup>
-        {user.check > 0 ? (
-          <Button
-            color="warning"
-            size="lg"
-            disabled={user.check == 0 || answer == ''}
-            startContent={<SendFilledIcon />}
-            onClick={() => props.send({ id: id, answer: answer })}
-          >
-            Хариулт илгээх
-          </Button>
-        ) : (
-          <Popover
-            key={'popover'}
-            showArrow
-            offset={10}
-            placement="bottom"
-            backdrop={'blur'}
-          >
-            <PopoverTrigger>
+        {!admin && (
+          <>
+            <RadioGroup
+              color="warning"
+              className="p-5"
+              value={answer}
+              onValueChange={setAnswer}
+            >
+              {choose.map((item: Choose) => (
+                <Radio key={item.key} value={item.key}>
+                  {item.value}
+                </Radio>
+              ))}
+            </RadioGroup>
+            {user.check > 0 ? (
               <Button
                 color="warning"
                 size="lg"
+                disabled={user.check == 0 || answer == ''}
                 startContent={<SendFilledIcon />}
+                onClick={() => props.send({ id: id, answer: answer })}
               >
                 Хариулт илгээх
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[240px]">
-              <h2>Уучлаарай</h2>
-              <br />
-              <p>Танай баг хожигдсон😓</p>
-            </PopoverContent>
-          </Popover>
+            ) : (
+              <Popover
+                key={'popover'}
+                showArrow
+                offset={10}
+                placement="bottom"
+                backdrop={'blur'}
+              >
+                <PopoverTrigger>
+                  <Button
+                    color="warning"
+                    size="lg"
+                    startContent={<SendFilledIcon />}
+                  >
+                    Хариулт илгээх
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[240px]">
+                  <h2>Уучлаарай</h2>
+                  <br />
+                  <p>Танай баг хожигдсон😓</p>
+                </PopoverContent>
+              </Popover>
+            )}
+          </>
         )}
       </div>
     </>
